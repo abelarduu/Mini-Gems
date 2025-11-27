@@ -2,12 +2,19 @@ require 'ruby2d'
 
 class Game
   def initialize
-    @window = Ruby2D::Window.new(title: 'Mini-Gems')
+    @window = Ruby2D::Window.new()
+    @window.set(
+      title:'Mini-Gems',
+      background:'green',
+      resizable: true)
+
+    @WIDTH = @Window.width
+    @HEIGHT = @Window.height
   end
 
   def main
     @window.update do
-      puts @window
+      puts @WIDTH , @HEIGHT
     end
   end
 
