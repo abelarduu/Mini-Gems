@@ -1,10 +1,8 @@
 require 'ruby2d'
 
 class Game
-  include Ruby2D
-
   def initialize
-    @window = Window.new(title: 'Mini-Gems')
+    @window = Ruby2D::Window.new(title: 'Mini-Gems')
   end
 
   def main
@@ -19,5 +17,4 @@ class Game
   end
 end
 
-game = Game.new
-game.run
+Game.new.run
