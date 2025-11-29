@@ -11,9 +11,8 @@ class Game
             
     @WIDTH = @window.width
     @HEIGHT = @window.height
-
-    @mouse_pos = Window.mouse_x, Window.mouse_y
-            
+    @mouse_held = false
+    
     @rect = Rectangle.new(
                       x: 15, y: 25,
                       width: 50, height: 50,
@@ -26,16 +25,38 @@ class Game
     [Window.mouse_x, Window.mouse_y]
   end
 
-  def main
-    # Atualização da interface a cada quadro
-    @window.update do
-      @rect.x= Window.mouse_x - @rect.width/2
-      @rect.y= Window.mouse_y - @rect.height/2
+  def check_collision(obj1, obj2)
+    # Verifica a colisão entre 2 objetos no eixo X/Y
+    if obj1.x > obj2.x && \
+      obj1.x < obj2.x + obj2.width
 
-      puts self.get_mouse_pos
+      if obj1.y > obj2.y && \
+         obj1.y < obj2.y + obj2.height
+          true
+      end
     end
   end
 
+  def check_inputs
+    @window.on :mouse do |event|
+      case event.button
+      when :left
+        if check_collision(event, @rect)
+            @rect.x = event.x - @rect.width/2
+            @rect.y = event.y - @rect.height/2
+        end
+      end
+
+    end
+  end
+
+  def main
+    # Atualização da interface a cada quadro
+    @window.update do
+      self.check_inputs
+    end
+  end
+  
   def run
     # Roda o Game
     self.main
