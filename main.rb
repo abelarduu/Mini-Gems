@@ -2,19 +2,33 @@ require 'ruby2d'
 
 class Game
   def initialize
-    @window = Ruby2D::Window.new()
+    @window = Window
     @window.set(
-      title:'Mini-Gems',
-      background:'green',
-      resizable: true)
+            title:'Mini-Gems',
+            background:'green',
+            resizable: true)
+            
+    @WIDTH = @window.width
+    @HEIGHT = @window.height
 
-    @WIDTH = @Window.width
-    @HEIGHT = @Window.height
+    @mouse_pos = Window.mouse_x, Window.mouse_y
+            
+    @rect = Rectangle.new(
+                      x: 15, y: 25,
+                      width: 200, height: 150,
+                      color: 'teal',
+                      z: 20)
+  end
+
+  def get_mouse_pos
+    [Window.mouse_x, Window.mouse_y]
   end
 
   def main
     @window.update do
-      puts @WIDTH , @HEIGHT
+      puts self.get_mouse_pos
+      # @WIDTH , @HEIGHT
+
     end
   end
 
