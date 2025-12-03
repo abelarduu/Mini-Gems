@@ -38,18 +38,29 @@ class Game
   end
 
   def check_inputs
-    @window.on :mouse do |event|
+    @window.on :mouse_down do |event|
       case event.button
       when :left
-        if check_collision(event, @rect)
-            @rect.x = event.x - @rect.width/2
-            @rect.y = event.y - @rect.height/2
-        end
+        @mouse_held = true
       end
+    end
+    
+    @window.on :mouse_up do |event|
+      case event.button
+      when :left
+        @mouse_held = false
+      end
+    end
 
+    @window.on :mouse do |event|
+      if @mouse_held &&
+        check_collision(event, @rect)
+          @rect.x = event.x - @rect.width/2
+          @rect.y = event.y - @rect.height/2
+      end
     end
   end
-
+    
   def main
     # Atualização da interface a cada quadro
     @window.update do
