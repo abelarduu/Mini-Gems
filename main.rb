@@ -39,15 +39,13 @@ class Game
 
   def check_inputs
     @window.on :mouse_down do |event|
-      case event.button
-      when :left
+      if event.button == :left
         @mouse_held = true
       end
     end
     
     @window.on :mouse_up do |event|
-      case event.button
-      when :left
+      if event.button == :left
         @mouse_held = false
       end
     end
