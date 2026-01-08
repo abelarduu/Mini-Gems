@@ -1,13 +1,42 @@
 require 'ruby2d'
 
+# Padronização de Objetos
+class GameObject < Sprite
+  def initialize(x, y, img, w, h, z)
+      super(
+        img,
+        x: x,
+        y: y,
+        width: w,
+        height: h,
+        z: z
+      )
+
+      @initial_pos_x = x
+      @initial_pos_y = y
+  end
+
+  def check_collision(obj)
+    # Verifica a colisão entre 2 objetos no eixo X/Y
+    if self.x > obj.x && \
+      self.x < obj.x + obj.width
+
+      if self.y > obj.y && \
+         self.y < obj.y + obj.height
+        true
+      end
+    end
+  end
+end
+
 class Game
   def initialize
     # Criação da Interface e dos elementos do game
     @window = Window
     @window.set(
       title:'Mini-Gems',
-      width: Window.display_width- 300,
-      height: Window.display_height-300,
+      width: @window.display_width - 300,
+      height: @window.display_height - 300,
       fullscreen: false,
       background:'green',
       mouse_visible:false
@@ -17,39 +46,14 @@ class Game
     @HEIGHT = @window.height
     @mouse_held = false
 
-    @rect= Rectangle.new(
-                    x: 15,
-                    y: 25,
-                    width: 150,
-                    height: 150,
-                    color: 'teal',
-                    z: 20
-                  )
+    @mouse = GameObject.new(@window.mouse_x,@window.mouse_y, "assets/mouse.png", 64, 64, 100)
+    @rect = GameObject.new( 15, 25, "assets/border-rect.png",150, 150, 1)
 
-    @mouse= Sprite.new(
-                  'assets/mouse.png',
-                  width:64,
-                  height:64,
-                  z: 100
-                  )
-
-  end
-
-  def check_collision( obj1, obj2)
-    # Verifica a colisão entre 2 objetos no eixo X/Y
-    if obj1.x > obj2.x && \
-      obj1.x < obj2.x + obj2.width
-
-      if obj1.y > obj2.y && \
-         obj1.y < obj2.y + obj2.height
-        true
-      end
-    end
   end
 
   def get_mouse_pos
     # retorna a posição X/Y do mouse na Interface
-    [Window.mouse_x, Window.mouse_y]
+    [@window.mouse_x, @window.mouse_y]
   end
 
   def check_inputs
@@ -70,7 +74,7 @@ class Game
       @mouse.y = event.y
       
       if @mouse_held &&
-        self.check_collision(@mouse, @rect)
+        @mouse.check_collision(@rect)
 
         @rect.x = @mouse.x - @rect.width/2
         @rect.y = @mouse.y - @rect.height/2

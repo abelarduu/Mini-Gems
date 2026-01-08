@@ -3,6 +3,6 @@
 # Mini-Gems
 ### 🚧⚠️ Em desenvolvimento... ⚠️🚧
 
-![interface](imgs/interface.png)
+![interface](imgs/interface.gif)
 
 </div>
