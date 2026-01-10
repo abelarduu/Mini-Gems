@@ -47,7 +47,8 @@ class Game
     @mouse_held = false
 
     @mouse = GameObject.new(@window.mouse_x,@window.mouse_y, "assets/mouse.png", 64, 64, 100)
-    @rect = GameObject.new( 15, 25, "assets/border-rect.png",150, 150, 1)
+    @drop_zone = GameObject.new( @window.width/2 - 150/2, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1)
+    @drag_item = GameObject.new( 500, 25, "assets/rect.png",150, 150, 1)
 
   end
 
@@ -66,18 +67,25 @@ class Game
     @window.on :mouse_up do |event|
       if event.button == :left
         @mouse_held = false
+
+        # Encaixa o item na área de drop
+        if @drag_item.check_collision(@drop_zone)
+          @drag_item.x = @drop_zone.x
+          @drag_item.y = @drop_zone.y
+        end
       end
     end
 
     @window.on :mouse_move do |event|
+      # Movimenta a sprite do Mouse
       @mouse.x = event.x
       @mouse.y = event.y
       
+      # Arrastar item com o mouse
       if @mouse_held &&
-        @mouse.check_collision(@rect)
-
-        @rect.x = @mouse.x - @rect.width/2
-        @rect.y = @mouse.y - @rect.height/2
+        @mouse.check_collision(@drag_item)
+        @drag_item.x = @mouse.x - @drag_item.width/2
+        @drag_item.y = @mouse.y - @drag_item.height/2
       end
     end
 
