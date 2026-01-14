@@ -18,10 +18,10 @@ class GameObject < Sprite
 
   def check_collision(obj)
     # Verifica a colisão entre 2 objetos no eixo X/Y
-    if self.x > obj.x && \
+    if self.x > obj.x - obj.width && \
       self.x < obj.x + obj.width
 
-      if self.y > obj.y && \
+      if self.y > obj.y - obj.height && \
          self.y < obj.y + obj.height
         true
       end
@@ -47,7 +47,10 @@ class Game
     @mouse_held = false
 
     @mouse = GameObject.new(@window.mouse_x,@window.mouse_y, "assets/mouse.png", 64, 64, 100)
-    @drop_zone = GameObject.new( @window.width/2 - 150/2, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1)
+    @drop_zone = [GameObject.new( @window.width/3 - 150/3, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1),
+                  GameObject.new( @window.width/2 - 150/2, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1),               
+                  GameObject.new( @window.width/1.54 -150/2, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1),               
+                  ]
     @drag_item = GameObject.new( 500, 25, "assets/rect.png",150, 150, 1)
 
   end
@@ -69,9 +72,11 @@ class Game
         @mouse_held = false
 
         # Encaixa o item na área de drop
-        if @drag_item.check_collision(@drop_zone)
-          @drag_item.x = @drop_zone.x
-          @drag_item.y = @drop_zone.y
+        for zone in @drop_zone
+          if @drag_item.check_collision(zone)
+            @drag_item.x = zone.x
+            @drag_item.y = zone.y
+          end
         end
       end
     end
