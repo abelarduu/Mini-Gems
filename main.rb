@@ -1,33 +1,5 @@
 require 'ruby2d'
-
-# Padronização de Objetos
-class GameObject < Sprite
-  def initialize(x, y, img, w, h, z)
-      super(
-        img,
-        x: x,
-        y: y,
-        width: w,
-        height: h,
-        z: z
-      )
-
-      @initial_pos_x = x
-      @initial_pos_y = y
-  end
-
-  def check_collision(obj)
-    # Verifica a colisão entre 2 objetos no eixo X/Y
-    if self.x > obj.x - obj.width && \
-      self.x < obj.x + obj.width
-
-      if self.y > obj.y - obj.height && \
-         self.y < obj.y + obj.height
-        true
-      end
-    end
-  end
-end
+require_relative 'src/object'
 
 class Game
   def initialize
@@ -39,7 +11,7 @@ class Game
       height: @window.display_height - 300,
       fullscreen: false,
       background:'green',
-      mouse_visible:false
+      mouse_visible: false
     )
 
     @WIDTH = @window.width
