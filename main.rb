@@ -10,6 +10,7 @@ class Game
       width: @window.display_width - 300,
       height: @window.display_height - 300,
       fullscreen: false,
+      resizable:true,
       background:'green',
       mouse_visible: false
     )
@@ -19,13 +20,16 @@ class Game
     @mouse_held = false
 
     @mouse = GameObject.new(@window.mouse_x,@window.mouse_y, "assets/mouse.png", 64, 64, 100)
-    @drop_zone = [GameObject.new( @window.width/3 - 150/3, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1),
-                  GameObject.new( @window.width/2 - 150/2, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1),               
-                  GameObject.new( @window.width/1.54 -150/2, @window.height/2 - 150/2, "assets/border-rect.png",150, 150, 1),               
-                  ]
-    @drag_item = GameObject.new( 500, 25, "assets/rect.png",150, 150, 1)
 
+    @drop_zones = []
+    
+    (0..2).each do |column|
+      @drop_zones.append(GameObject.new( @window.width/2**column - 150/(column+0.5), @window.height/2 - 150/2, "assets/border-rect.png", 150, 150, 1))
+    end
+
+    @drag_item = GameObject.new(500, 25, "assets/rect.png",150, 150, 1)
   end
+
 
   def get_mouse_pos
     # retorna a posição X/Y do mouse na Interface
@@ -44,7 +48,7 @@ class Game
         @mouse_held = false
 
         # Encaixa o item na área de drop
-        for zone in @drop_zone
+        for zone in @drop_zones
           if @drag_item.check_collision(zone)
             @drag_item.x = zone.x
             @drag_item.y = zone.y
