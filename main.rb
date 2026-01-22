@@ -23,13 +23,21 @@ class Game
 
     @drop_zones = []
     
+  (0..2).each do |line|
     (0..2).each do |column|
-      @drop_zones.append(GameObject.new( @window.width/2**column - 150/(column+0.5), @window.height/2 - 150/2, "assets/border-rect.png", 150, 150, 1))
+      @drop_zones << GameObject.new(
+        @window.width / 2 - 75 + (column - 1) * 220,
+        @window.height / 2 - 75 + (line - 1) * 180,
+        "assets/border-rect.png",
+        150,
+        150,
+        1
+      )
     end
-
-    @drag_item = GameObject.new(500, 25, "assets/rect.png",150, 150, 1)
   end
 
+    @drag_item = GameObject.new(200, 180, "assets/rect.png",150, 150, 1)
+  end
 
   def get_mouse_pos
     # retorna a posição X/Y do mouse na Interface
