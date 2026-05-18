@@ -1,5 +1,7 @@
 # Padronização de Objetos
 class GameObject < Sprite
+  attr_accessor :item
+  
   def initialize(x, y, img, w, h, z)
       super(
         img,

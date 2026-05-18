@@ -1,6 +1,8 @@
 require 'ruby2d'
 require_relative 'src/object'
 
+gameplay = false
+
 class Game
   def initialize
     # Criação da Interface e dos elementos do game
@@ -33,8 +35,17 @@ class Game
         150,
         1
       )
+
+      for zone in @drop_zones
+        zone.item= false
+      end
+
     end
   end
+
+  # for zone in @drop_zones
+  #   zone.item = None
+  # end
 
     @drag_item = GameObject.new(200, 180, "assets/rect.png",150, 150, 1)
   end
@@ -57,7 +68,8 @@ class Game
 
         # Encaixa o item na área de drop
         for zone in @drop_zones
-          if @drag_item.check_collision(zone)
+          if @drag_item.check_collision(zone) and
+            !zone.item
             @drag_item.x = zone.x
             @drag_item.y = zone.y
           end
