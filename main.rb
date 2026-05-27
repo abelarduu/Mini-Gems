@@ -4,6 +4,7 @@ require_relative 'src/object'
 class Game
   def initialize
     # Criação da Interface e dos elementos do game
+    # Janela
     @window = Window
     @window.set(
       title: 'Mini-Gems',
@@ -14,6 +15,7 @@ class Game
       fullscreen: false
     )
 
+    # Mouse
     @mouse_held = false
     @mouse = GameObject.new(
           @window.mouse_x, 
@@ -23,10 +25,15 @@ class Game
           64,
           100)  
 
-    @drag_item = GameObject.new(80, 80, "assets/rect.png", 150, 150, 1)
-    
-    @drop_zones = []
+    # Definindo itens de drop(objetos)
+    @drag_items = []  
+    @selected_item = nil
+    (0..9).each do |obj|
+        @drag_items << GameObject.new(80*obj, 80, "assets/rect.png", 150, 150, 1)
+      end
 
+    # Definindo zonas de drop(grids)
+    @drop_zones = []
     (0..2).each do |line|
       (0..2).each do |column|
         @drop_zones << GameObject.new(
@@ -39,17 +46,31 @@ class Game
         )
       end
     end
-
       for zone in @drop_zones
         zone.item= false
       end
   end
 
+  # Método de ancoragem de itens nos grids
+  def anchor_to_grid(drag_item)
+    @drop_zones.each do |zone|
+      if drag_item.check_collision(zone) && !zone.item
+        drag_item.x = zone.x
+        drag_item.y = zone.y
+        zone.item = drag_item
+        return true
+      end
+    end
+    false
+  end
+
+  # Método de verificação de inputs
   def check_inputs
+
+    # Screenshot
     @window.on :key_up do |event|
       if event.key == 'f12'
         Window.screenshot("shot_#{Time.now.to_i}.png")
-        puts 'Screenshot tirado!'
       end
     end
     
@@ -59,34 +80,31 @@ class Game
       @mouse.y = event.y
 
       # Arrastar item com o mouse
-      if @mouse_held &&
-        @mouse.check_collision(@drag_item)
-        @drag_item.x = @mouse.x - @drag_item.width/2
-        @drag_item.y = @mouse.y - @drag_item.height/2
+      for item in @drag_items
+        if @mouse_held &&
+          @mouse.check_collision(item)
+          item.x = @mouse.x - item.width/2
+          item.y = @mouse.y - item.height/2
+        end
       end
     end
 
+    # Alinha cada item arrastado à sua respectiva grade
+    @drag_items.map { |item|anchor_to_grid(item) }
+
+    # Definindo o Drag
     @window.on :mouse_down do |event|
       if event.button == :left
         @mouse_held = true
       end
     end
 
+    # Definindo o Drop
     @window.on :mouse_up do |event|
       if event.button == :left
         @mouse_held = false
-
-        # Encaixa o item na área de drop
-        for zone in @drop_zones
-          if @drag_item.check_collision(zone) and
-            !zone.item
-            @drag_item.x =zone.x
-            @drag_item.y =zone.y
-          end
-        end
       end
     end
-
   end
 
   def main
