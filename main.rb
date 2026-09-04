@@ -28,20 +28,20 @@ class Game
     # Definindo itens de drop(objetos)
     @drag_items = []  
     @selected_item = nil
-    (0..9).each do |obj|
-        @drag_items << GameObject.new(80*obj, 80, "assets/rect.png", 150, 150, 1)
+    (0..25).each do |index|
+        @drag_items << GameObject.new(80*index, 0, "assets/gem.png", 96, 96, index)
       end
 
     # Definindo zonas de drop(grids)
     @drop_zones = []
-    (0..2).each do |line|
-      (0..2).each do |column|
+    (0..4).each do |line|
+      (0..4).each do |column|
         @drop_zones << GameObject.new(
-          @window.width / 2 - 75 + (column - 1) * 220,
-          @window.height / 2 - 75 + (line - 1) * 180,
+          @window.width / 2 - 175 + (column - 1) * 120,
+          @window.height / 2 - 175 + (line - 1) * 120,
           "assets/border-rect.png",
-          150,
-          150,
+          96,
+          96,
           0
         )
       end
@@ -51,6 +51,11 @@ class Game
       end
   end
 
+  def highest_z_index?(item)
+    puts(@drag_items.max_by(&:z).z)
+    item.z == @drag_items.max_by(&:z).z
+  end
+
   # Método de ancoragem de itens nos grids
   def anchor_to_grid(drag_item)
     @drop_zones.each do |zone|
@@ -58,15 +63,15 @@ class Game
         drag_item.x = zone.x
         drag_item.y = zone.y
         zone.item = drag_item
+        @drag_items.delete(drag_item)
         return true
       end
+      false
     end
-    false
   end
 
   # Método de verificação de inputs
   def check_inputs
-
     # Screenshot
     @window.on :key_up do |event|
       if event.key == 'f12'
@@ -83,14 +88,14 @@ class Game
       for item in @drag_items
         if @mouse_held &&
           @mouse.check_collision(item)
-          item.x = @mouse.x - item.width/2
-          item.y = @mouse.y - item.height/2
+            #verificação do maior z index
+            if self.highest_z_index?(item) 
+              item.x = @mouse.x - item.width/2
+              item.y = @mouse.y - item.height/2
+            end
         end
       end
     end
-
-    # Alinha cada item arrastado à sua respectiva grade
-    @drag_items.map { |item|anchor_to_grid(item) }
 
     # Definindo o Drag
     @window.on :mouse_down do |event|
@@ -103,6 +108,10 @@ class Game
     @window.on :mouse_up do |event|
       if event.button == :left
         @mouse_held = false
+
+        # Alinha cada item arrastado à sua respectiva grade
+        @drag_items.map { |item| anchor_to_grid(item) }
+
       end
     end
   end
